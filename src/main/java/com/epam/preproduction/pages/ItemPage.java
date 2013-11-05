@@ -1,5 +1,6 @@
 package com.epam.preproduction.pages;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,19 +98,34 @@ public class ItemPage extends Page {
 		PageFactory.initElements(getDriver(), CataloguePage.class);
 	}
 
-	public void gerUrls(List<String> data) {
-//
-		List<WebElement> names = getDriver().findElements(By.xpath("//div[@class='item']/div[1]/a"));
-		for (int i = 1; i < 5; i++) {
+	public void gerUrls(List<String> catalogueLinks) {
+		List<String> urlList = new ArrayList<String>();
+		List<String> itemNames = new ArrayList<String>();
+		for (int i = 1; i < 6; i++) {
+			List<WebElement> names = getDriver().findElements(By.xpath("//div[@class='item'][" + i + "]/div/a"));
 	
 			for (WebElement webElement : names) {
 				String hrefs = webElement.getAttribute("href");
-				data.add(hrefs);
-				}
-			System.out.println(data);
+				catalogueLinks.add(hrefs);
+				//itemNames.add(webElement.getTagName());
 			}
+			getDriver().findElement(By.xpath("//div[@class='item'][" + i + "]/div/a")).click();
+			PageFactory.initElements(getDriver(), ItemPage.class);
+			urlList.add(i-1, getDriver().getCurrentUrl());
+			getDriver().navigate().back();
+			refreshLocators();
+			//Assert.assertEquals(catalogueLinks, urlList);
+			// go to price page
+			getDriver().findElement(By.xpath("//div[@class='links-bar']/div[@class='link']/a")).click();
+
+			
+			
+//			itemNames.add(getDriver().findElement(By.xpath("//div[@class='item'][" + i + "]/div/a")).getText());
+//			getDriver().findElement(By.id("edit-name-1")).sendKeys(itemNames.get(i-1));
+//			getDriver().findElement(By.id("edit-submit-1")).click();
 		}
+		System.out.println(catalogueLinks);
+		System.out.println(urlList);
+	}
 
-
-//	}
 }
